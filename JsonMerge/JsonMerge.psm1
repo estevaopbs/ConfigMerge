@@ -7,7 +7,7 @@ function GetValueInJsonAddress($json, $address) {
     return $value
 }
 
-# Returns a flat string given an json map
+# Flatten an json map to a string
 function FlattenMap($map) {
     $flat = ""
     foreach ($address in $map) {
@@ -18,14 +18,14 @@ function FlattenMap($map) {
     return $flat
 }
 
-# Compares two json maps
+# Compare two json maps
 function MapsAreEq($map1, $map2) {
     $flat1 = FlattenMap $map1
     $flat2 = FlattenMap $map2
     return $flat1 -eq $flat2  
 }
 
-# Returns a json map given an json
+# Return an array of arrays. Each internal array contains a series of keys that leads to one leaf of the hashtable
 function MapJson($json) {
     $lastMap = @()
     foreach ($key in $json.Keys) {
@@ -108,7 +108,7 @@ function MergeJsonFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
         }
     }
 
-    # Save newJson to the disk
+    # Write the merged json file to disk
     $json = $newJson | ConvertTo-Json -Depth $depth
     $json | Out-File -FilePath "$targetCfgPath"
 }

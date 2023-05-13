@@ -1,7 +1,7 @@
-# Define function to merge the .config files
-function MergeConfigFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
+# Define function to merge the xml files
+function MergeXmlFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
 
-    # Parse the old and new .config files into System.Xml
+    # Parse the old and new xml files into System.Xml
     $newXml = [xml](Get-Content $newCfgPath)
     $oldXml = [xml](Get-Content $oldCfgPath)
 

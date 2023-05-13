@@ -1,12 +1,12 @@
 # This function displays usage instructions and descriptions for the arguments
 function WriteUsage() {
     "Usage: `n"
-    Write-Host "CfgMerge.ps1 <filetype(optional)> <old> <new> <target(optional)>`n"
+    Write-Host "ConfigMerge.ps1 <filetype(optional)> <old> <new> <target(optional)>`n"
     Write-Host "Arguments: "
-    Write-Host "- fileType: The type of the files that will be merged. In case it is not inserted, as long old and new files has the same extension at the end of the filename, this extension will be considered as fileType. Valid inputs: ini, xml, config, conf, json."
-    Write-Host "- old: Path to the .ini file of the outdated package."
-    Write-Host "- new: Path to the default product .ini file. In case no target is inserted, it will also be considered the target path."
-    Write-Host "- target: Path to the .ini file on the target installation. It may be omited in case the filename of 'old' and 'new' file are the same. It may only contain the path to the directory and the target filename will be the same as 'old' and 'new'."
+    Write-Host "- fileType: The type of the files that will be merged. In case it is not inserted, as long old and new files has the same extension at the end of the filename, this extension will be considered as fileType. Valid inputs: ini; json; xml."
+    Write-Host "- old: Path to the old config file."
+    Write-Host "- new: Path to the new config file. In case no target is inserted, it will also be considered the target path."
+    Write-Host "- target: Path to the target config file. It may be omited in case the filename of 'old' and 'new' file are the same. It may only contain the path to the directory and the target filename will be the same as 'old' and 'new'."
 }
 
 # Get the amount of arguments passed to the script
@@ -85,21 +85,13 @@ switch ($fileType) {
         Import-Module "./IniMerge/IniMerge.psm1"
         MergeIniFiles $oldCfgPath $newCfgPath $targetCfgPath
     }
-    "xml" {
-        Import-Module "./ConfigMerge/ConfigMerge.psm1"
-        MergeConfigFiles $oldCfgPath $newCfgPath $targetCfgPath
-    }
-    "config" {
-        Import-Module "./ConfigMerge/ConfigMerge.psm1"
-        MergeConfigFiles $oldCfgPath $newCfgPath $targetCfgPath
-    }
-    "conf" {
-        Import-Module "./ConfigMerge/ConfigMerge.psm1"
-        MergeConfigFiles $oldCfgPath $newCfgPath $targetCfgPath
-    }
     "json" {
         Import-Module "./JsonMerge/JsonMerge.psm1"
         MergeJsonFiles $oldCfgPath $newCfgPath $targetCfgPath
+    }
+    "xml" {
+        Import-Module "./XmlMerge/XmlMerge.psm1"
+        MergeConfigFiles $oldCfgPath $newCfgPath $targetCfgPath
     }
     default {
         WriteUsage

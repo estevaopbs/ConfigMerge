@@ -1,4 +1,4 @@
-# Define helper function to parse a .ini file into a list of block structs
+# Define helper function to parse a ini file into a list of block structs
 function ParseIniFile($path) {
 
     # Define the structs for parameters and blocks
@@ -75,14 +75,14 @@ function MountBlock($block) {
     return $blockContent
 }
 
-# Define function to merge the .ini files
+# Define function to merge the ini files
 function MergeIniFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
 
-    # Parse the old and new .ini files into lists of block structs
+    # Parse the old and new ini files into lists of block structs
     $oldBlocks = ParseIniFile $oldCfgPath
     $newBlocks = ParseIniFile $newCfgPath
 
-    # Loop through each block in the new .ini comparing it with the old .ini file and adds the merged blocks in the output
+    # Loop through each block in the new ini comparing it with the old ini file and adds the merged blocks in the output
     $targetContent = @()
     $blockIndex = 0
     foreach ($newBlock in $newBlocks) {
@@ -112,6 +112,6 @@ function MergeIniFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
         $blockIndex += 1
     }
 
-    # Write the merged .ini file to disk
+    # Write the merged ini file to disk
     $targetContent | Out-File -FilePath $targetCfgPath -Encoding UTF8 -Force
 }
