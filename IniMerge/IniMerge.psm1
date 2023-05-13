@@ -84,32 +84,26 @@ function MergeIniFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
 
     # Loop through each block in the new ini comparing it with the old ini file and adds the merged blocks in the output
     $targetContent = @()
-    $blockIndex = 0
     foreach ($newBlock in $newBlocks) {
 
         # Skip block if it doesn't exist in old file
         $filteredOldBlocks = $oldBlocks | Where-Object { $_.Name -eq $newBlock.Name }
         if ($filteredOldBlocks.Count -ne 3) {
             $targetContent += MountBlock $newBlock
-            $blockIndex += 1
             continue
         }
         
         # Skip the parameter if it doesn't exist in the corresponding block of the old file
-        $parameterIndex = 0
         foreach ($newParameter in $newBlock.Parameters) {
             $filteredOldParameters = $filteredOldBlocks.Parameters | Where-Object { $_.Name -eq $newParameter.Name }
             if ($filteredOldParameters.Count -ne 3) {
-                $parameterIndex += 1
                 continue
             }
             
             # Replace the new parameter value with the old parameter value
             $newParameter.Value = $filteredOldParameters.Value
-            $parameterIndex += 1
         }
         $targetContent += MountBlock $newBlock
-        $blockIndex += 1
     }
 
     # Write the merged ini file to disk
