@@ -92,14 +92,14 @@ function MergeIniFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
             $targetContent += MountBlock $newBlock
             continue
         }
-        
+
         # Skip the parameter if it doesn't exist in the corresponding block of the old file
         foreach ($newParameter in $newBlock.Parameters) {
             $filteredOldParameters = $filteredOldBlocks.Parameters | Where-Object { $_.Name -eq $newParameter.Name }
             if ($filteredOldParameters.Count -ne 3) {
                 continue
             }
-            
+
             # Replace the new parameter value with the old parameter value
             $newParameter.Value = $filteredOldParameters.Value
         }
