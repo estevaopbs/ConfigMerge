@@ -1,6 +1,6 @@
 # This function displays usage instructions and descriptions for the arguments
 function WriteUsage() {
-    Write-Host "Usage: `n"
+    Write-Host "`nUsage:"
     Write-Host "ConfigMerge.ps1 <filetype(optional)> <old> <new> <target(optional)>`n"
     Write-Host "Arguments: "
     Write-Host "- fileType: The type of the files that will be merged. In case it is not inserted, as long old and new files has the same extension at the end of the filename, this extension will be considered as fileType. Valid inputs: ini; json; xml."
