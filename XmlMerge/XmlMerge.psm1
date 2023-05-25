@@ -1,9 +1,9 @@
 # Define function to merge the xml files
-function MergeXmlFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
+function MergeXmlFiles($OldFile, $NewFile, $TargetPath) {
 
     # Parse the old and new xml files into System.Xml
-    $newXml = [xml](Get-Content $newCfgPath)
-    $oldXml = [xml](Get-Content $oldCfgPath)
+    $oldXml = [xml](Get-Content $OldFile)
+    $newXml = [xml](Get-Content $NewFile)
 
     # Iterate over each node of newXml
     $xPaths = @()
@@ -22,7 +22,7 @@ function MergeXmlFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
         }
         $count = 0
         foreach ($path in $xPaths) {
-            if ($path -match "$Path\[[0-9]+\]") {
+            if ($path -match "$xPath\[[0-9]+\]") {
                 $count++
             }
         }
@@ -43,7 +43,8 @@ function MergeXmlFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
         }
         $xPaths += $xPath
     }
-
     # Save the resultant xml on disk
-    $newXml.Save($targetCfgPath)
+    $newXml.Save($TargetPath)
 }
+
+#MergeXmlFiles '/home/estevao/projects/ConfigMerge/test/old/connections.config' '/home/estevao/projects/ConfigMerge/test/new/connections.config' '/home/estevao/projects/ConfigMerge/test/target/connections.config'
