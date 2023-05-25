@@ -46,4 +46,7 @@ switch ($FileType) {
         Import-Module "./XmlMerge/XmlMerge.psm1"
         MergeXmlFiles $OldFile $NewFile $TargetPath
     }
+    default {
+        Write-Host "Invalid Input"
+    }
 }
