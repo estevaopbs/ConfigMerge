@@ -43,6 +43,7 @@ function MergeXmlFiles($OldFile, $NewFile, $TargetPath) {
         }
         $xPaths += $xPath
     }
+
     # Save the resultant xml on disk
     $newXml.Save($TargetPath)
 }
