@@ -31,6 +31,11 @@ if (-not $TargetPath) {
     $TargetPath = $NewFile
 }
 
+Write-Host $FileType
+Write-Host $OldFile
+Write-Host $NewFile
+Write-Host $TargetPath
+
 # Call the function that performs the merge operation on the files
 switch ($FileType) {
     "ini" {
@@ -42,7 +47,6 @@ switch ($FileType) {
         MergeJsonFiles $OldFile $NewFile $TargetPath
     }
     "xml" {
-        Write-Host $TargetPath
         Import-Module "./XmlMerge/XmlMerge.psm1"
         MergeXmlFiles $OldFile $NewFile $TargetPath
     }

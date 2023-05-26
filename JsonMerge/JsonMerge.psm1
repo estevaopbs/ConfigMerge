@@ -56,7 +56,7 @@ function MapJson($json) {
         }
         $lastMap = $map
     }
-    return $lastMap
+    return $lastMap 
 }
 
 # Define function to merge the .json files
@@ -92,7 +92,7 @@ function MergeJsonFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
             foreach ($item in $address) {
                 switch ($item.GetType().FullName) {
                     "System.String" {
-                        $expression += "[`"$item`"]"
+                        $expression += "['$item']"
                     }
                     "System.Int32" {
                         $expression += "[$item]"
@@ -100,7 +100,7 @@ function MergeJsonFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
                 }
             }
             if ($value.GetType().FullName -eq "System.String") {
-                Invoke-Expression "$expression = `"$value`""
+                Invoke-Expression "$expression = '$value'"
             }
             else {
                 Invoke-Expression "$expression = $value"
