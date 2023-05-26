@@ -76,11 +76,11 @@ function MountBlock($block) {
 }
 
 # Define function to merge the ini files
-function MergeIniFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
+function MergeIniFiles($OldFile, $NewFile, $TargetPath) {
 
     # Parse the old and new ini files into lists of block structs
-    $oldBlocks = ParseIniFile $oldCfgPath
-    $newBlocks = ParseIniFile $newCfgPath
+    $oldBlocks = ParseIniFile $OldFile
+    $newBlocks = ParseIniFile $NewFile
 
     # Loop through each block in the new ini comparing it with the old ini file and adds the merged blocks in the output
     $targetContent = @()
@@ -107,5 +107,5 @@ function MergeIniFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
     }
 
     # Write the merged ini file to disk
-    $targetContent | Out-File -FilePath $targetCfgPath -Encoding UTF8 -Force
+    $targetContent | Out-File -FilePath $TargetPath -Encoding UTF8 -Force
 }

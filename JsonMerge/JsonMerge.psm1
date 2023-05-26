@@ -36,12 +36,12 @@ function MapJson($json) {
         foreach ($address in $lastMap) {
             $value = GetValueInJsonAddress $json $address
             switch ($value.GetType().FullName) {
-                "System.Management.Automation.OrderedHashtable" {
+                'System.Management.Automation.OrderedHashtable' {
                     foreach ($key in $value.Keys) {
                         $map = $map + , ($address + $key)
                     }
                 }
-                "System.Object[]" {
+                'System.Object[]' {
                     for ($i = 0; $i -lt ($value.Count); $i++) {
                         $map = $map + , ($address + $i)
                     }
@@ -60,11 +60,10 @@ function MapJson($json) {
 }
 
 # Define function to merge the .json files
-function MergeJsonFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
-
+function MergeJsonFiles($OldFile, $NewFile, $TargetPath) {
     # Parse the old and new .json files into OrderedHashtabl
-    $oldJson = Get-Content -Path $oldCfgPath -Raw | ConvertFrom-Json -AsHashtable
-    $newJson = Get-Content -Path $newCfgPath -Raw | ConvertFrom-Json -AsHashtable
+    $oldJson = Get-Content -Path $OldFile -Raw | ConvertFrom-Json -AsHashtable
+    $newJson = Get-Content -Path $NewFile -Raw | ConvertFrom-Json -AsHashtable
 
     # Iterate over each address in the map of newJson
     $map = MapJson $newJson
@@ -88,7 +87,7 @@ function MergeJsonFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
             $value = $value[$item]
         }
         if ($isValue) {
-            $expression = "`$newJson"
+            $expression = '$newJson'
             foreach ($item in $address) {
                 switch ($item.GetType().FullName) {
                     "System.String" {
@@ -99,16 +98,17 @@ function MergeJsonFiles($oldCfgPath, $newCfgPath, $targetCfgPath) {
                     }
                 }
             }
-            if ($value.GetType().FullName -eq "System.String") {
-                Invoke-Expression "$expression = '$value'"
+            if ($value.GetType().FullName -eq 'System.String') {
+                $expression += " = '$value'"
             }
             else {
-                Invoke-Expression "$expression = $value"
+                $expression += " = $value"
             }
+            Invoke-Expression $expression
         }
     }
 
     # Write the merged json file to disk
     $json = $newJson | ConvertTo-Json -Depth $depth
-    $json | Out-File -FilePath "$targetCfgPath"
+    $json | Out-File -FilePath "$TargetPath"
 }

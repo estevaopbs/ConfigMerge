@@ -7,7 +7,7 @@ function MergeXmlFiles($OldFile, $NewFile, $TargetPath) {
 
     # Iterate over each node of newXml
     $xPaths = @()
-    foreach ($node in $newXml.SelectNodes("//*")) {
+    foreach ($node in $newXml.SelectNodes('//*')) {
         $branch = @($node)
         $xPath = "/$($node.LocalName)"
 
@@ -46,5 +46,3 @@ function MergeXmlFiles($OldFile, $NewFile, $TargetPath) {
     # Save the resultant xml on disk
     $newXml.Save($TargetPath)
 }
-
-#MergeXmlFiles '/home/estevao/projects/ConfigMerge/test/old/connections.config' '/home/estevao/projects/ConfigMerge/test/new/connections.config' '/home/estevao/projects/ConfigMerge/test/target/connections.config'

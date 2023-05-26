@@ -1,5 +1,5 @@
 param (
-    [Parameter(Mandatory = $false, HelpMessage = 'The type of the files that will be merged. In case it is not provided, as long old and new files has the same extension, this extension will be taken as FileType. Valid values: ini; json; xml.')]
+    [Parameter(Mandatory = $false, HelpMessage = 'The type of the files that will be merged.')]
     [ValidateScript({ @('ini', 'json', 'xml') -contains $_ })]
     [string]$FileType,
 
@@ -11,7 +11,7 @@ param (
     [ValidateScript({ Test-Path $_ -PathType 'Leaf' })]
     [string]$NewFile,
 
-    [Parameter(Mandatory = $false, HelpMessage = 'Path to the target file. If PathType is container, works only if the filename of NewFile and OldFile are the same. In case TargetPath is not provided, the value of NewFile will be taken as TagetPath.')]
+    [Parameter(Mandatory = $false, HelpMessage = 'Path to the target file.')]
     [ValidateScript({ Test-Path -Path (Split-Path -Path $_ -Parent) -PathType 'Container' })]
     [string]$TargetPath
 )
@@ -33,19 +33,19 @@ if (-not $TargetPath) {
 
 # Call the function that performs the merge operation on the files
 switch ($FileType) {
-    "ini" {
-        Import-Module "./IniMerge/IniMerge.psm1"
+    'ini' {
+        Import-Module './IniMerge/IniMerge.psm1'
         MergeIniFiles $OldFile $NewFile $TargetPath
     }
-    "json" {
-        Import-Module "./JsonMerge/JsonMerge.psm1"
+    'json' {
+        Import-Module './JsonMerge/JsonMerge.psm1'
         MergeJsonFiles $OldFile $NewFile $TargetPath
     }
-    "xml" {
-        Import-Module "./XmlMerge/XmlMerge.psm1"
+    'xml' {
+        Import-Module './XmlMerge/XmlMerge.psm1'
         MergeXmlFiles $OldFile $NewFile $TargetPath
     }
     default {
-        Write-Host "Invalid Input"
+        Write-Host 'Invalid Input'
     }
 }
