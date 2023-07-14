@@ -1,18 +1,5 @@
 # Define helper function to parse a ini file into a list of block structs
-function ParseIniFile($path) {
-
-    # Define the structs for parameters and blocks
-    $parameterStruct = @{
-        Name     = ""
-        Value    = ""
-        Comments = @()
-    }
-
-    $blockStruct = @{
-        Name       = ""
-        Comments   = @()
-        Parameters = @()
-    }
+function ParseIniFile($path, $bypassDoubleness) {
 
     # Initialize the parameters that will be used to run the merge
     $blocks = @()
@@ -23,35 +10,57 @@ function ParseIniFile($path) {
     foreach ($line in $content) {
         if ($line.StartsWith(";")) {
             # Add comments to the list that will be associated with the next parameter/block
-            $lastComments += $line.TrimStart(";").Trim()
+            $lastComments += $line.TrimStart(";")
         }
         elseif ($line.StartsWith("[")) {
             # Start of new block
-            $currentBlock = $blockStruct.Clone()
+            $currentBlock = @{
+                Name       = ""
+                Comments   = @()
+                Parameters = @()
+            }
             $currentBlock.Name = $line.Trim("[", "]", " ")
             $currentBlock.Comments = $lastComments
             $lastComments = @()
             # Check for duplicate block names
             if (-not $null -eq ($blocks | Where-Object { $_.Name -eq $currentBlock.Name })) {
-                Write-Output "Inconsistent '$path' file. There is more than one [$($currentBlock.Name)] block in the file."
-                exit 1
+                Write-Host "Inconsistent '$path' file. There is more than one [$($currentBlock.Name)] block in the file."
+                if ($bypassDoubleness) {
+                    $blocks = $blocks | Where-Object { $_.Name -ne $currentBlock.Name }
+                }
+                else {
+                    exit 1
+                }
             }
-            $blocks += $currentBlock
+            if ($currentBlock.Count -eq 3) {
+                $blocks += $currentBlock
+            }
         }
         elseif ($line.Contains("=")) {
             # Parameter line
             $paramParts = $line.Split("=", 2).Trim()
-            $param = $parameterStruct.Clone()
+            $param = @{
+                Name     = ""
+                Value    = ""
+                Comments = @()
+            }
             $param.Name = $paramParts[0]
             $param.Value = $paramParts[1]
             $param.Comments = $lastComments
             $lastComments = @()
             # Check for duplicate parameter names within a block
             if (-not $null -eq ($currentBlock.Parameters | Where-Object { $_.Name -eq $param.Name })) {
-                Write-Output "Inconsistent '$path' file. There is more than one '$($param.Name)' parameter in the block '[$($currentBlock.Name)]'."
-                exit 1
+                Write-Host "Inconsistent '$path' file. There is more than one '$($param.Name)' parameter in the block '[$($currentBlock.Name)]'."
+                if ($bypassDoubleness) {
+                    $currentBlock.Parameters = $currentBlock.Parameters | Where-Object { $_.Name -ne $param.Name }
+                }
+                else {
+                    exit 1
+                }
             }
-            $currentBlock.Parameters += $param
+            if ($param.Count -eq 3) {
+                $currentBlock.Parameters += $param
+            }
         }
     }
     # Return the list of block structs
@@ -62,12 +71,12 @@ function ParseIniFile($path) {
 function MountBlock($block) {
     $blockContent = @()
     foreach ($comment in $block.Comments) {
-        $blockContent += "; $comment"
+        $blockContent += ";$comment"
     }
     $blockContent += "[$($block.Name)]"
     foreach ($parameter in $block.Parameters) {
         foreach ($comment in $parameter.Comments) {
-            $blockContent += "; $comment"
+            $blockContent += ";$comment"
         }
         $blockContent += "$($parameter.Name)=$($parameter.Value)"
     }
@@ -76,11 +85,11 @@ function MountBlock($block) {
 }
 
 # Define function to merge the ini files
-function MergeIniFiles($OldFile, $NewFile, $TargetPath) {
+function MergeIniFiles($OldFile, $NewFile, $TargetPath, $bypassDoubleness) {
 
     # Parse the old and new ini files into lists of block structs
-    $oldBlocks = ParseIniFile $OldFile
-    $newBlocks = ParseIniFile $NewFile
+    $oldBlocks = ParseIniFile $OldFile $bypassDoubleness
+    $newBlocks = ParseIniFile $NewFile $bypassDoubleness
 
     # Loop through each block in the new ini comparing it with the old ini file and adds the merged blocks in the output
     $targetContent = @()

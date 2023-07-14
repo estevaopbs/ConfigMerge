@@ -40,6 +40,7 @@ function MergeXmlFiles($OldFile, $NewFile, $TargetPath) {
                     $newXml.SelectSingleNode($xPath).$($attribute.ToString()) = $oldNode.$($attribute.ToString())
                 }
             }
+            $newXml.SelectSingleNode($xPath).InnerText = $oldNode.InnerText
         }
         $xPaths += $xPath
     }

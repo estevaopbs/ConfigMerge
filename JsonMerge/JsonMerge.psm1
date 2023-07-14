@@ -96,10 +96,16 @@ function MergeJsonFiles($OldFile, $NewFile, $TargetPath) {
                     "System.Int32" {
                         $expression += "[$item]"
                     }
+                    default {
+                        Throw "$item is neither System.String nor System.Int32."
+                    }
                 }
             }
             if ($value.GetType().FullName -eq 'System.String') {
                 $expression += " = '$value'"
+            }
+            elseif ($value.GetType().FullName -eq 'System.Boolean') {
+                $expression += " = '$($value.ToString().ToLower())'"
             }
             else {
                 $expression += " = $value"
