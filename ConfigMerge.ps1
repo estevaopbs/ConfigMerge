@@ -13,9 +13,9 @@ param (
 
     [Parameter(Mandatory = $false, HelpMessage = 'Path to the target file.')]
     [ValidateScript({ Test-Path -Path (Split-Path -Path $_ -Parent) -PathType 'Container' })]
-    [string]$TargetPath
+    [string]$TargetPath,
 
-    [Parameter(Mandatory = $false), HelpMessage = 'Bypass parameter doubleness (ini only)']
+    [Parameter(HelpMessage = 'Bypass parameter doubleness (ini only)')]
     [switch]$BypassDoubleness
 )
 
