@@ -101,15 +101,16 @@ function MergeJsonFiles($OldFile, $NewFile, $TargetPath) {
                     }
                 }
             }
-            if ($value.GetType().FullName -eq 'System.String') {
-                $expression += " = '$value'"
-            }
-            elseif ($value.GetType().FullName -eq 'System.Boolean') {
-                $expression += " = '$($value.ToString().ToLower())'"
-            }
-            else {
-                $expression += " = $value"
-            }
+            switch ($value.GetType().FullName) {
+              'System.String' {
+                  $expression += " = '$value'"
+                }
+              'System.Boolean' {
+                  $expression += " = '$($value.ToString().ToLower())'"
+                }
+              default {
+                  $expression += " = $value"
+                }
             Invoke-Expression $expression
         }
     }
