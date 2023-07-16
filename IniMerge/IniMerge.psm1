@@ -1,5 +1,5 @@
 # Define helper function to parse a ini file into a list of block structs
-function ParseIniFile($path, $bypassDoubleness) {
+function ParseIniFile($path, $BypassDoubleness) {
 
     # Initialize the parameters that will be used to run the merge
     $blocks = @()
@@ -25,7 +25,7 @@ function ParseIniFile($path, $bypassDoubleness) {
             # Check for duplicate block names
             if (-not $null -eq ($blocks | Where-Object { $_.Name -eq $currentBlock.Name })) {
                 Write-Host "Inconsistent '$path' file. There is more than one [$($currentBlock.Name)] block in the file."
-                if ($bypassDoubleness) {
+                if ($BypassDoubleness) {
                     $blocks = $blocks | Where-Object { $_.Name -ne $currentBlock.Name }
                 }
                 else {
@@ -51,7 +51,7 @@ function ParseIniFile($path, $bypassDoubleness) {
             # Check for duplicate parameter names within a block
             if (-not $null -eq ($currentBlock.Parameters | Where-Object { $_.Name -eq $param.Name })) {
                 Write-Host "Inconsistent '$path' file. There is more than one '$($param.Name)' parameter in the block '[$($currentBlock.Name)]'."
-                if ($bypassDoubleness) {
+                if ($BypassDoubleness) {
                     $currentBlock.Parameters = $currentBlock.Parameters | Where-Object { $_.Name -ne $param.Name }
                 }
                 else {
@@ -85,11 +85,11 @@ function MountBlock($block) {
 }
 
 # Define function to merge the ini files
-function MergeIniFiles($OldFile, $NewFile, $TargetPath, $bypassDoubleness) {
+function MergeIniFiles($OldFile, $NewFile, $TargetPath, $BypassDoubleness) {
 
     # Parse the old and new ini files into lists of block structs
-    $oldBlocks = ParseIniFile $OldFile $bypassDoubleness
-    $newBlocks = ParseIniFile $NewFile $bypassDoubleness
+    $oldBlocks = ParseIniFile $OldFile $BypassDoubleness
+    $newBlocks = ParseIniFile $NewFile $BypassDoubleness
 
     # Loop through each block in the new ini comparing it with the old ini file and adds the merged blocks in the output
     $targetContent = @()
