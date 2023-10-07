@@ -4,7 +4,8 @@ function GetValueInJsonAddress($json, $address) {
     foreach ($item in $address) {
         $value = $value[$item]
     }
-    return $value
+    $valueType = $value.GetType().FullName
+    return $value, $valueType
 }
 
 # Flatten an json map to a string
@@ -34,8 +35,8 @@ function MapJson($json) {
     while ($true) {
         $map = @()
         foreach ($address in $lastMap) {
-            $value = GetValueInJsonAddress $json $address
-            switch ($value.GetType().FullName) {
+            $value, $valueType = GetValueInJsonAddress $json $address
+            switch ($valueType) {
                 'System.Management.Automation.OrderedHashtable' {
                     foreach ($key in $value.Keys) {
                         $map = $map + , ($address + $key)
@@ -102,20 +103,20 @@ function MergeJsonFiles($OldFile, $NewFile, $TargetPath) {
                 }
             }
             switch ($value.GetType().FullName) {
-              'System.String' {
-                  $expression += " = '$value'"
+                'System.String' {
+                    $expression += " = '$value'"
                 }
-              'System.Boolean' {
-                  $expression += " = '$($value.ToString().ToLower())'"
+                'System.Boolean' {
+                    $expression += " = '$($value.ToString().ToLower())'"
                 }
-              default {
-                  $expression += " = $value"
+                default {
+                    $expression += " = $value"
                 }
-            Invoke-Expression $expression
+                Invoke-Expression $expression
+            }
         }
-    }
 
-    # Write the merged json file to disk
-    $json = $newJson | ConvertTo-Json -Depth $depth
-    $json | Out-File -FilePath "$TargetPath"
-}
+        # Write the merged json file to disk
+        $json = $newJson | ConvertTo-Json -Depth $depth
+        $json | Out-File -FilePath "$TargetPath"
+    }
