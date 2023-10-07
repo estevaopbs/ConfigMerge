@@ -112,8 +112,8 @@ function MergeJsonFiles($OldFile, $NewFile, $TargetPath) {
                 default {
                     $expression += " = $value"
                 }
-                Invoke-Expression $expression
             }
+            Invoke-Expression $expression
         }
 
         # Write the merged json file to disk
