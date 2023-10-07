@@ -113,7 +113,6 @@ function MergeJsonFiles($OldFile, $NewFile, $TargetPath) {
                     $expression += " = $value"
                 }
             }
-            # Write-Host $expression
             Invoke-Expression $expression
         }
     }
