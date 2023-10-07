@@ -113,10 +113,12 @@ function MergeJsonFiles($OldFile, $NewFile, $TargetPath) {
                     $expression += " = $value"
                 }
             }
+            # Write-Host $expression
             Invoke-Expression $expression
         }
-
-        # Write the merged json file to disk
-        $json = $newJson | ConvertTo-Json -Depth $depth
-        $json | Out-File -FilePath "$TargetPath"
     }
+
+    # Write the merged json file to disk
+    $json = $newJson | ConvertTo-Json -Depth $depth
+    $json | Out-File -FilePath "$TargetPath"
+}
