@@ -53,4 +53,4 @@ We welcome contributions from the community. To contribute:
 5. Open a pull request with a description of your changes.
 
 ## License
-ConfigMerge is licensed under the terms of the [MIT License](#LICENSE).
+ConfigMerge is licensed under the terms of the [MIT License](LICENSE).
